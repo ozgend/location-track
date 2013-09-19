@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Simple Map</title>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta charset="utf-8">
+    <style>
+      html, body, #map-canvas {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+      }
+    </style>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
+    
+    
+  </head>
+  <body>
+    <div id="map-canvas"></div>
+  
+  	<script>
+	
+	var ntap = {
+		map  	: null,
+		marker	: null,
+		socket	: null,
+		
+		init:function(){
+			ntap.initMaps();
+			ntap.initSocket();
+		},
+		
+		initMaps:function(){
+			var mapOptions = {
+    			zoom: 18,
+    			center: new google.maps.LatLng(41.018952,28.888927),
+    			mapTypeId: google.maps.MapTypeId.SATELLITE
+    		};
+  			ntap.map = new google.maps.Map(document.getElementById('map-canvas'),mapOptions);
+		
+			var redIcon = new google.maps.MarkerImage('http://openclipart.org/people/mightyman/1332525074.svg');
+		
+			ntap.marker = new google.maps.Marker({
+  				position: new google.maps.LatLng(41.018952,28.888927),
+  				icon:redIcon
+  			});
+  			
+  			ntap.marker.setMap(ntap.map);
+		
+		},
+		initSocket:function(){
+			ntap.socket = io.connect('http://192.168.6.119:1188');
+
+			ntap.socket.on('alive', function (data) {
+				console.log(data);
+				ntap.updateLocation(data);
+			});
+
+		},
+		
+		updateLocation:function(position){
+			var center = new google.maps.LatLng(position.lat,position.long);
+			ntap.marker.setPosition(center);
+		}
+	}
+	
+	ntap.init();
+		
+
+	</script>
+	
+  </body>
+</html>
+
+
