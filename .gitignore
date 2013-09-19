@@ -1,3 +1,5 @@
 
 .DS_Store
 ios-locationtrack/DerivedData
+android-locationtrack/bin
+android-locationtrack/gen
