@@ -25,6 +25,7 @@
 		map  	: null,
 		marker	: null,
 		socket	: null,
+		deviceMarkers:{},
 		
 		init:function(){
 			ntap.initMaps();
@@ -50,11 +51,15 @@
 		
 		},
 		initSocket:function(){
-			ntap.socket = io.connect('http://192.168.6.119:1188');
+			ntap.socket = io.connect('http://localhost:1188');
 
 			ntap.socket.on('alive', function (data) {
-				console.log(data);
+				console.log('alive: '+JSON.stringify(data));
 				ntap.updateLocation(data);
+			});
+			
+			ntap.socket.on('connected', function (data) {
+				console.log('connected: '+data);
 			});
 
 		},
@@ -62,7 +67,14 @@
 		updateLocation:function(position){
 			var center = new google.maps.LatLng(position.lat,position.long);
 			ntap.marker.setPosition(center);
-		}
+		},
+		
+		addOrUpdateMarker:(position){
+			//todo: work with multiple markers for devices
+		},
+		
+		
+		_endobj:null
 	}
 	
 	ntap.init();
