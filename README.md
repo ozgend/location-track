@@ -1,10 +1,16 @@
 SimpleLocationTrack
 ===================
+     .
+server setup
+--
+ 
+ - clone & build node.js from https://github.com/joyent/node.git
+ - install express & socket.io node packages
+ - start server script
+   
+  
+  
+client setup
+--
 
-Simple location track
-
---server setup
-    install node.js
-    install npm
-    install express & socket.io node packages
-    start server script
+ - adjust host and port
