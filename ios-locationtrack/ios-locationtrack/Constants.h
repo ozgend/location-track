@@ -11,7 +11,8 @@
 
 #define USE_IMMEDIATE   1
 #define USE_TIMER       2
-#define UPLOAD_MODE     USE_IMMEDIATE
+#define UPLOAD_MODE     USE_TIMER
 #define TIMER_INTERVAL  (0.1 * 60)
+#define URL             @"http://192.168.6.119:1188/alive"
 
 #endif

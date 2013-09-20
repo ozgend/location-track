@@ -112,7 +112,7 @@
             NSString *serialized = [NSString stringWithFormat:@"{\"device\":\"%@\",\"lat\":\"%f\",\"long\":\"%f\"}",[[UIDevice currentDevice] name],location.coordinate.latitude,location.coordinate.longitude];
             
             NSData *requestData = [NSData dataWithBytes: [serialized UTF8String] length: [serialized length]];
-            NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL: [NSURL URLWithString: @"http://192.168.6.119:1188/alive"]];
+            NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL: [NSURL URLWithString: URL]];
             [request setHTTPMethod: @"POST"];
             [request setValue:@"application/json" forHTTPHeaderField:@"content-type"];
             [request setHTTPBody: requestData];
