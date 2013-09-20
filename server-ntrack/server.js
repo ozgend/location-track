@@ -15,6 +15,10 @@ app.get('/client.js', function(req, res) {
 	res.sendfile(__dirname + '/client.js');
 });
 
+app.get('/apk.apk', function(req, res) {
+	res.sendfile(__dirname + '/apk.apk');
+});
+
 app.post('/alive', function(req, res) {
 	console.log("alive: %s ", JSON.stringify(req.body));
 	io.sockets.emit('alive', req.body);

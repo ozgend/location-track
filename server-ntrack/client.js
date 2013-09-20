@@ -1,6 +1,4 @@
 var ntap = {
-	markerIcon : new google.maps.MarkerImage(
-			'http://openclipart.org/people/mightyman/1332525074.svg'),
 	map : null,
 	deviceMarkers : {},
 	devices : [],
@@ -15,13 +13,12 @@ var ntap = {
 	initMaps : function() {
 		var mapOptions = {
 			zoom : 10,
-			center : new google.maps.LatLng(41.018952, 28.888927),
+			center : new google.maps.LatLng(40.99291067804179, 29.024468994140655),
 			mapTypeId : google.maps.MapTypeId.SATELLITE
 		};
-		ntap.map = new google.maps.Map(document.getElementById('map-canvas'),
-				mapOptions);
-
+		ntap.map = new google.maps.Map(document.getElementById('map-canvas'),mapOptions);
 	},
+	
 	initSocket : function() {
 		ntap.socket = io.connect('http://localhost:1188');
 
@@ -48,8 +45,10 @@ var ntap = {
 	addOrUpdateDeviceMarker : function(data) {
 		var currentMarker = ntap.deviceMarkers[data.device];
 		if (!currentMarker) {
-			currentMarker = new google.maps.Marker({
-				icon : ntap.markerIcon,
+			var color = (0x1000000+(Math.random())*0xffffff).toString(16).substr(1,6);
+			
+		    currentMarker = new google.maps.Marker({
+				icon : new google.maps.MarkerImage('https://chart.googleapis.com/chart?chst=d_map_pin_icon&chld=mobile|'+color),
 				labelContent : data.device,
 				labelAnchor : new google.maps.Point(22, 0),
 				labelClass : "marker-label",
@@ -82,6 +81,8 @@ var ntap = {
 		ntap.deviceMarkers[device].setVisible(true);
 		$('#device-list p').removeClass('selected');
 		$p.addClass('selected');
+		var position =ntap.deviceMarkers[device].position;
+		ntap.map.panTo(position);
 	},
 
 	toggleDeviceList : function() {
