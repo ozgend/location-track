@@ -1,88 +1,80 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>Simple Map</title>
-    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
-    <meta charset="utf-8">
-    <style>
-      html, body, #map-canvas {
-        margin: 0;
-        padding: 0;
-        height: 100%;
-      }
-    </style>
-    <script src="/socket.io/socket.io.js"></script>
-    <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
-    
-    
-  </head>
-  <body>
-    <div id="map-canvas"></div>
-  
-  	<script>
-	
-	var ntap = {
-		map  	: null,
-		marker	: null,
-		socket	: null,
-		deviceMarkers:{},
-		
-		init:function(){
-			ntap.initMaps();
-			ntap.initSocket();
-		},
-		
-		initMaps:function(){
-			var mapOptions = {
-    			zoom: 18,
-    			center: new google.maps.LatLng(41.018952,28.888927),
-    			mapTypeId: google.maps.MapTypeId.SATELLITE
-    		};
-  			ntap.map = new google.maps.Map(document.getElementById('map-canvas'),mapOptions);
-		
-			var redIcon = new google.maps.MarkerImage('http://openclipart.org/people/mightyman/1332525074.svg');
-		
-			ntap.marker = new google.maps.Marker({
-  				position: new google.maps.LatLng(41.018952,28.888927),
-  				icon:redIcon
-  			});
-  			
-  			ntap.marker.setMap(ntap.map);
-		
-		},
-		initSocket:function(){
-			ntap.socket = io.connect('http://localhost:1188');
+<head>
+<title>ntap</title>
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+<meta charset="utf-8">
+<style>
+html,body,#map-canvas {
+	margin: 0;
+	padding: 0;
+	height: 100%;
+}
 
-			ntap.socket.on('alive', function (data) {
-				console.log('alive: '+JSON.stringify(data));
-				ntap.updateLocation(data);
-			});
-			
-			ntap.socket.on('connected', function (data) {
-				console.log('connected: '+data);
-			});
+.marker-label {
+	color: red;
+	background-color: white;
+	font-family: "Lucida Grande", "Arial", sans-serif;
+	font-size: 10px;
+	font-weight: bold;
+	text-align: center;
+	width: 60px;
+	border: 2px solid black;
+	white-space: nowrap;
+}
 
-		},
-		
-		updateLocation:function(position){
-			var center = new google.maps.LatLng(position.lat,position.long);
-			ntap.marker.setPosition(center);
-		},
-		
-		addOrUpdateMarker:(position){
-			//todo: work with multiple markers for devices
-		},
-		
-		
-		_endobj:null
-	}
-	
-	ntap.init();
-		
+div#device-list {
+	font-family: monospace;
+	padding: 6px;
+	position: absolute;
+	bottom: 18px;
+	right: 2px;
+	text-align: right;
+	background-color: rgba(0, 0, 0, 0.4);
+	width: 180px;
+	height: auto;
+	min-height: 20px;
+	z-index: 999;
+}
 
-	</script>
-	
-  </body>
+div#device-list p {
+	margin: 2px 0px;
+	padding: 8px;
+	background-color: rgba(44, 44, 66, 0.3);
+	color: white;
+}
+
+div#device-list p:hover,div#device-list p.selected {
+	cursor: pointer;
+	background-color: rgb(255, 153, 0);
+	color: black;
+}
+
+div#device-list span {
+	color: rgb(255, 184, 0);
+	cursor: pointer;
+	font-weight: bold;
+	display: inline-block;
+	width: 100%;
+	background: transparent;
+	text-align: center;
+}
+</style>
+
+<script
+	src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
+<script src="/socket.io/socket.io.js"></script>
+<script src="http://code.jquery.com/jquery-2.0.3.min.js"></script>
+<script src="/client.js"></script>
+
+</head>
+
+<body>
+	<div id="device-list">
+		<span>Devices</span>
+	</div>
+	<div id="map-canvas"></div>
+</body>
 </html>
 
 

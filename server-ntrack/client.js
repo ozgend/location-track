@@ -1,0 +1,96 @@
+var ntap = {
+	markerIcon : new google.maps.MarkerImage(
+			'http://openclipart.org/people/mightyman/1332525074.svg'),
+	map : null,
+	deviceMarkers : {},
+	devices : [],
+	socket : null,
+
+	init : function() {
+		ntap.initMaps();
+		ntap.initSocket();
+		ntap.bindUiEvents();
+	},
+
+	initMaps : function() {
+		var mapOptions = {
+			zoom : 10,
+			center : new google.maps.LatLng(41.018952, 28.888927),
+			mapTypeId : google.maps.MapTypeId.SATELLITE
+		};
+		ntap.map = new google.maps.Map(document.getElementById('map-canvas'),
+				mapOptions);
+
+	},
+	initSocket : function() {
+		ntap.socket = io.connect('http://localhost:1188');
+
+		ntap.socket.on('alive', function(data) {
+			console.log('alive: ' + JSON.stringify(data));
+			ntap.addOrUpdateDeviceMarker(data);
+		});
+
+		ntap.socket.on('connected', function(data) {
+			console.log('connected: ' + JSON.stringify(data));
+		});
+	},
+
+	bindUiEvents : function() {
+		$('#device-list').on('click', 'p', function() {
+			ntap.deviceSelected($(this));
+		});
+
+		$('#device-list span').click(function() {
+			ntap.toggleDeviceList();
+		});
+	},
+
+	addOrUpdateDeviceMarker : function(data) {
+		var currentMarker = ntap.deviceMarkers[data.device];
+		if (!currentMarker) {
+			currentMarker = new google.maps.Marker({
+				icon : ntap.markerIcon,
+				labelContent : data.device,
+				labelAnchor : new google.maps.Point(22, 0),
+				labelClass : "marker-label",
+				labelStyle : {
+					opacity : 0.75
+				}
+			});
+			currentMarker.setMap(ntap.map);
+		}
+		var point = new google.maps.LatLng(data.lat, data.long);
+		currentMarker.setPosition(point);
+		ntap.deviceMarkers[data.device] = currentMarker;
+		ntap.adjustDeviceList(data.device);
+	},
+
+	adjustDeviceList : function(device) {
+		if (ntap.devices.indexOf(device) < 0) {
+			ntap.devices.push(device);
+			var html = '<p data-device="' + device + '">' + device + '</p>';
+			$('#device-list').append(html);
+		}
+		$('#device-list span').text('Devices (' + ntap.devices.length + ')');
+	},
+
+	deviceSelected : function($p) {
+		for ( var key in ntap.deviceMarkers) {
+			ntap.deviceMarkers[key].setVisible(false);
+		}
+		var device = $p.data('device');
+		ntap.deviceMarkers[device].setVisible(true);
+		$('#device-list p').removeClass('selected');
+		$p.addClass('selected');
+	},
+
+	toggleDeviceList : function() {
+		$('#device-list p').slideToggle(100);
+	},
+
+	_endobj : null
+}
+
+$(document).ready(function() {
+	ntap.init();
+});
