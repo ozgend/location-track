@@ -30,12 +30,16 @@
 
 - (void)applicationDidEnterBackground:(UIApplication *)application
 {
-    [[LocationWatcherSingleton shared] stopListening];
+    //[[LocationWatcherSingleton shared] stopListening];
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application
 {
     [[LocationWatcherSingleton shared] startListening];
+}
+
+- (void)applicationWillEnterForeground:(UIApplication *)application{
+    
 }
 
 @end
