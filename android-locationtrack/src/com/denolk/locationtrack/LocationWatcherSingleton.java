@@ -34,9 +34,10 @@ public class LocationWatcherSingleton implements LocationListener {
 		}
 	}
 
-	private int _uploadMode = UPLOAD_MODE.USE_TIMER.getValue();
-	private int TIMER_INTERVAL = 5000;
-	private String _url = "http://10.0.0.14:1188/alive";
+	private final int _uploadMode = UPLOAD_MODE.USE_TIMER.getValue();
+	private final int TIMER_INTERVAL = 6000;
+	private final String _url = "http://192.168.6.119:1188/alive";
+
 	private String _macAddress;
 	private Location _location;
 	private Timer _locationUploader;
@@ -97,23 +98,23 @@ public class LocationWatcherSingleton implements LocationListener {
 	}
 
 	private void postData(Location location) {
-		if(location==null){
+		if (location == null) {
 			Log.i("LocationWatcher", "location is null, will not upload.");
 			return;
 		}
-		
+
 		String data = String.format(
 				"{\"device\":\"%s\",\"lat\":\"%s\",\"long\":\"%s\"}",
 				this._macAddress, location.getLatitude(),
 				location.getLongitude());
-		Log.i("LocationWatcher", "uploading location "+ data);
+		Log.i("LocationWatcher", "uploading location " + data);
 		try {
 			HttpClient client = new DefaultHttpClient();
 			HttpPost post = new HttpPost(this._url);
 			post.setEntity(new StringEntity(data));
 			post.setHeader("content-type", "application/json");
 			HttpResponse response = client.execute(post);
-			Log.i("LocationWatcher", "uploaded "+ response.toString());
+			Log.i("LocationWatcher", "uploaded " + response.toString());
 		} catch (Exception ex) {
 			Log.e("LocationWatcher", ex.toString());
 		}
